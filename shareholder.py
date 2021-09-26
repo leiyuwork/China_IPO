@@ -24,6 +24,7 @@ for code in range(300001, 300005):
         response.encoding = response.apparent_encoding
         soup = BeautifulSoup(response.text, 'html.parser')
         for date in soup.find_all("option"):
+            print(str(code) + "   " + date.text)
             url_final = "https://quote.cfi.cn/quote.aspx?stockid=" + str(number) + "&contenttype=gdtj&jzrq=" + date.text
             dfs = pd.read_html(url_final)
             pd.set_option('display.max_columns', None)
@@ -32,8 +33,10 @@ for code in range(300001, 300005):
             dfs[4].dropna(axis=1, how='all', inplace=True)
             df_list = dfs[4].tail(dfs[4].shape[0] - 1).values.tolist()
             for item in df_list:
+                item.insert(0, str(code))
                 result.append(item)
-            time.sleep(5)
+            time.sleep(1)
+        print("***********************" + str(code) + "  書き込み開始" + "***********************")
         Output = pd.DataFrame(result)
         Output.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_data.csv",
                       mode="a",
@@ -43,7 +46,8 @@ for code in range(300001, 300005):
         log.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_log.csv", mode='a',
                    index=False, header=None, encoding="utf-8_sig")
     except Exception as e:
-        Error = pd.DataFrame([[str(code), str(e)]])
+        Error = pd.DataFrame([[str(code), str(url_final), str(e)]])
+        print(str(code) + " ERROR 発生" + Error)
         Error.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_error.csv",
                      mode='a',
                      index=False, header=None,
