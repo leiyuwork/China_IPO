@@ -6,14 +6,15 @@ import os
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+    'ASP.NET_SessionId': "wpdrdaokc3apfqhggqxiutql",
 }
 
-for code in range(300001, 300005):
+for code in range(300005, 300600):
     print(code)
     try:
         result = []
         url_door = "https://quote.cfi.cn/" + str(code) + ".html"
-        response = requests.get(url_door, headers=headers)
+        response = requests.get(url_door, headers=headers, timeout=60)
         response.encoding = response.apparent_encoding
         soup = BeautifulSoup(response.text, 'html.parser')
         number = str(
@@ -26,7 +27,7 @@ for code in range(300001, 300005):
         for date in soup.find_all("option"):
             print(str(code) + "   " + date.text)
             url_final = "https://quote.cfi.cn/quote.aspx?stockid=" + str(number) + "&contenttype=gdtj&jzrq=" + date.text
-            dfs = pd.read_html(url_final)
+            dfs = pd.read_html(requests.get(url_final, timeout=60, headers=headers).text)
             pd.set_option('display.max_columns', None)
             pd.set_option('display.max_rows', None)
             dfs[4].dropna(how='all', inplace=True)
@@ -35,7 +36,7 @@ for code in range(300001, 300005):
             for item in df_list:
                 item.insert(0, str(code))
                 result.append(item)
-            time.sleep(1)
+            time.sleep(3)
         print("***********************" + str(code) + "  書き込み開始" + "***********************")
         Output = pd.DataFrame(result)
         Output.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_data.csv",
@@ -46,16 +47,11 @@ for code in range(300001, 300005):
         log.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_log.csv", mode='a',
                    index=False, header=None, encoding="utf-8_sig")
     except Exception as e:
-        Error = pd.DataFrame([[str(code), str(url_final), str(e)]])
+        Error = pd.DataFrame([[str(code), str(e)]])
         print(str(code) + " ERROR 発生" + Error)
         Error.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\china_GEM_shareholder_error.csv",
                      mode='a',
                      index=False, header=None,
                      encoding="utf-8_sig")
         pass
-
-
-
-
-
 
