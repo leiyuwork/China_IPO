@@ -9,12 +9,12 @@ headers = {
     'ASP.NET_SessionId': "wpdrdaokc3apfqhggqxiutql",
 }
 
-for code in range(300005, 300600):
+for code in range(300016, 300600):
     print(code)
     try:
         result = []
         url_door = "https://quote.cfi.cn/" + str(code) + ".html"
-        response = requests.get(url_door, headers=headers, timeout=60)
+        response = requests.get(url_door, headers=headers, timeout=600)
         response.encoding = response.apparent_encoding
         soup = BeautifulSoup(response.text, 'html.parser')
         number = str(
@@ -27,7 +27,7 @@ for code in range(300005, 300600):
         for date in soup.find_all("option"):
             print(str(code) + "   " + date.text)
             url_final = "https://quote.cfi.cn/quote.aspx?stockid=" + str(number) + "&contenttype=gdtj&jzrq=" + date.text
-            dfs = pd.read_html(requests.get(url_final, timeout=60, headers=headers).text)
+            dfs = pd.read_html(requests.get(url_final, timeout=600, headers=headers).text)
             pd.set_option('display.max_columns', None)
             pd.set_option('display.max_rows', None)
             dfs[4].dropna(how='all', inplace=True)
