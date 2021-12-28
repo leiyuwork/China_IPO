@@ -52,8 +52,8 @@ for code in range(300001, 300586):
         Output = Output.T
         final = pd.concat([result, Output], axis=1)
         final.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\planning20211228.csv", mode='a', index=False, header=None,encoding="utf-8_sig")
-        time.sleep(1)
+        time.sleep(3)
     except Exception as e:
         final= pd.DataFrame([[code,e]])
         final.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\planning20211228.csv", mode='a', index=False, header=None,encoding="utf-8_sig")
-        time.sleep(1)
+        time.sleep(3)
