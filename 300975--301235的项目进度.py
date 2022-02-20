@@ -27,15 +27,27 @@ USER_AGENTS = [
 random_agent = USER_AGENTS[randint(0, len(USER_AGENTS) - 1)]
 headers = {
     'User-Agent': random_agent,
+    'cookie': '__FTabcjffgh=2022-2-10-15-3-37; __NRUabcjffgh=1644473017108; __RECabcjffgh=1; __RTabcjffgh=2022-2-17-16-5-59'
 }
-for code in range(300852, 301000):
+for code in range(300975, 301236):
     print('*****************' + str(code) + '*****************')
-    response = requests.get('https://data.eastmoney.com/xg/xg/detail/' + str(code) +'.html', headers=headers)
-    time.sleep(3)
-    bs_obj = BeautifulSoup(response.text, 'lxml')
-    linkSpan = bs_obj.select('body > div.main > div.main-content > div:nth-child(5) > div > div.fr')
-    print(linkSpan)
-    for a in linkSpan:
-        filename = os.path.join(r'C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\ipo\GEM\\', str(code)+'.pdf')
-        with open(filename, 'wb') as f:
-            f.write(requests.get("http:" + a.find('a', href=True).attrs['href']).content)
+    try:
+        response = requests.get('https://stock.cnstock.com/xg/detail/' + str(code), headers=headers)
+        time.sleep(3)
+        soup = BeautifulSoup(response.text, 'html.parser')  # get the webpage content
+        l = soup.find_all('div', class_='content')[3].find_all('tr')
+        del l[0:3]
+        del l[-3:]
+        for each in l:
+            result = []
+            result.append(str(code))
+            result.append(each.text)
+            Result = pd.DataFrame([result])
+            Result.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\300975--301235的项目进度.csv", mode='a', index=False,
+                                      header=None,
+                                      encoding="utf-8_sig")
+    except:
+        Result = pd.DataFrame([[str(code), 'null']])
+        Result.to_csv(r"C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\300975--301235的项目进度.csv", mode='a', index=False,
+                                      header=None,
+                                      encoding="utf-8_sig")
