@@ -1,0 +1,13 @@
+import pandas as pd  # データ解析を容易にする機能を提供する
+import time
+df = pd.read_excel(
+    r'C:\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\GEM_Underpricing_planstring20220304.xlsx', 'Sheet2')
+df.head()
+df.shape
+new_df = df.drop(df[(df["Unnamed: 7"] == 32767)|(df["Unnamed: 7"] == 32766)|(df["Unnamed: 7"] == 0)].index)
+new_df.head()
+all_newlist = new_df.values.tolist()
+all_newlist[0]
+for lists in all_newlist:
+    with open(r'C:\\Users\Ray94\OneDrive\Research\PHD\Research\data\IPO\ipo\GEM\txt\\'+ str(lists[0]) +'.txt', 'w',encoding="utf-8") as f:
+        f.write("%s\n" % lists[4])
